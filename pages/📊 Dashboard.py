@@ -25,7 +25,7 @@ st.markdown(f"""
         margin-bottom: 2rem;
     }}
     .metric-card {{
-        background-color: #f8f9fa;
+        background-color: #FF9A1F;
         padding: 1.5rem;
         border-radius: 0.5rem;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -363,3 +363,4 @@ if df is not None:
     
 else:
     st.error("No se pudieron cargar los datos de delitos. Verifica que el archivo esté en la ubicación correcta.")
+
