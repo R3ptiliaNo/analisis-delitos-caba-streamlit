@@ -10,42 +10,52 @@ from utils.geo_utils import load_geojson
 st.set_page_config(page_title="Dashboard de Delitos CABA", page_icon="📊", layout="wide")
 st.title("📊 Dashboard de Análisis de Delitos - CABA 2024")
 
+# Paleta de colores (3 colores principales)
+COLOR_PRIMARIO = "#1f77b4"  # Azul
+COLOR_SECUNDARIO = "#2c3e50"  # Gris oscuro
+COLOR_ACENTO = "#e74c3c"  # Rojo
+
 # Estilos CSS personalizados
-st.markdown("""
+st.markdown(f"""
 <style>
-    .main-header {
+    .main-header {{
         font-size: 2.5rem;
-        color: #1f77b4;
+        color: {COLOR_PRIMARIO};
         text-align: center;
         margin-bottom: 2rem;
-    }
-    .metric-card {
-        background-color: #BDB76B;
+    }}
+    .metric-card {{
+        background-color: #f8f9fa;
         padding: 1.5rem;
         border-radius: 0.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         text-align: center;
-    }
-    .section-header {
+        border-left: 4px solid {COLOR_PRIMARIO};
+    }}
+    .section-header {{
         font-size: 1.5rem;
-        color: #2c3e50;
-        border-bottom: 2px solid #3498db;
+        color: {COLOR_SECUNDARIO};
+        border-bottom: 2px solid {COLOR_PRIMARIO};
         padding-bottom: 0.5rem;
         margin-bottom: 1rem;
-    }
-    .chart-container {
+    }}
+    .chart-container {{
         background-color: white;
         padding: 1.5rem;
         border-radius: 0.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         margin-bottom: 1.5rem;
-    }
-    .kpi-highlight {
+        border: 1px solid #e9ecef;
+    }}
+    .kpi-highlight {{
         font-size: 1.2rem;
         font-weight: bold;
-        color: #e74c3c;
+        color: {COLOR_ACENTO};
         margin-top: 0.5rem;
-    }
+    }}
+    .sidebar .sidebar-content {{
+        background-color: #f8f9fa;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -129,7 +139,7 @@ if df is not None:
         st.markdown(f"""
         <div class="metric-card">
             <h3>Total de Delitos</h3>
-            <h2 style="color: #e74c3c;">{total_delitos:,}</h2>
+            <h2 style="color: {COLOR_ACENTO};">{total_delitos:,}</h2>
         </div>
         """, unsafe_allow_html=True)
     
@@ -137,7 +147,7 @@ if df is not None:
         st.markdown(f"""
         <div class="metric-card">
             <h3>Día con Más Delitos</h3>
-            <h2 style="color: #3498db;">{dia_mas_delitos['dia']}</h2>
+            <h2 style="color: {COLOR_SECUNDARIO};">{dia_mas_delitos['dia']}</h2>
             <div class="kpi-highlight">{dia_mas_delitos['cantidad']:,} delitos</div>
         </div>
         """, unsafe_allow_html=True)
@@ -146,7 +156,7 @@ if df is not None:
         st.markdown(f"""
         <div class="metric-card">
             <h3>Franja Más Activa</h3>
-            <h2 style="color: #2ecc71;">{franja_mas_delitos['franja']} hs</h2>
+            <h2 style="color: {COLOR_SECUNDARIO};">{franja_mas_delitos['franja']} hs</h2>
             <div class="kpi-highlight">{franja_mas_delitos['cantidad']:,} delitos</div>
         </div>
         """, unsafe_allow_html=True)
@@ -155,7 +165,7 @@ if df is not None:
         st.markdown(f"""
         <div class="metric-card">
             <h3>Barrio Más Afectado</h3>
-            <h2 style="color: #f39c12;">{barrio_mas_delitos['barrio']}</h2>
+            <h2 style="color: {COLOR_SECUNDARIO};">{barrio_mas_delitos['barrio']}</h2>
             <div class="kpi-highlight">{barrio_mas_delitos['cantidad']:,} delitos</div>
         </div>
         """, unsafe_allow_html=True)
@@ -179,7 +189,7 @@ if df is not None:
             title='Distribución por Tipo de Delito',
             labels={'tipo': 'Tipo de Delito', 'cantidad': 'Cantidad de Delitos'},
             color='cantidad',
-            color_continuous_scale='Viridis'
+            color_continuous_scale=[COLOR_PRIMARIO, COLOR_ACENTO]
         )
         fig_barras_tipo.update_xaxes(tickangle=45)
         st.plotly_chart(fig_barras_tipo, use_container_width=True)
@@ -197,7 +207,7 @@ if df is not None:
             title='Delitos por Comuna',
             labels={'comuna': 'Comuna', 'cantidad': 'Cantidad de Delitos'},
             color='cantidad',
-            color_continuous_scale='Plasma'
+            color_continuous_scale=[COLOR_PRIMARIO, COLOR_ACENTO]
         )
         fig_comuna.update_xaxes(tickangle=45)
         st.plotly_chart(fig_comuna, use_container_width=True)
@@ -223,7 +233,7 @@ if df is not None:
             y='cantidad', 
             title='Evolución Diaria de Delitos',
             labels={'fecha': 'Fecha', 'cantidad': 'Cantidad de Delitos'},
-            color_discrete_sequence=['#3498db']
+            color_discrete_sequence=[COLOR_PRIMARIO]
         )
         
         fig_temporal.add_trace(
@@ -232,7 +242,7 @@ if df is not None:
                 y=df_temporal['media_movil'],
                 mode='lines',
                 name='Media Móvil (7 días)',
-                line=dict(color='#e74c3c', dash='dash')
+                line=dict(color=COLOR_ACENTO, dash='dash')
             )
         )
         
@@ -263,7 +273,7 @@ if df is not None:
             labels=dict(x="Franja Horaria", y="Día de la Semana", color="Cantidad de Delitos"),
             title="Distribución por Día y Franja Horaria",
             aspect="auto",
-            color_continuous_scale="YlOrRd"
+            color_continuous_scale=[COLOR_PRIMARIO, COLOR_ACENTO]
         )
         
         st.plotly_chart(fig_heatmap, use_container_width=True)
@@ -287,7 +297,7 @@ if df is not None:
             title='Top 10 Barrios con Más Delitos',
             labels={'barrio': 'Barrio', 'cantidad': 'Cantidad de Delitos'},
             color='cantidad',
-            color_continuous_scale='Plasma'
+            color_continuous_scale=[COLOR_PRIMARIO, COLOR_ACENTO]
         )
         fig_barrio.update_xaxes(tickangle=45)
         st.plotly_chart(fig_barrio, use_container_width=True)
@@ -310,7 +320,7 @@ if df is not None:
             title='Distribución Mensual de Delitos',
             labels={'mes': 'Mes', 'cantidad': 'Cantidad de Delitos'},
             color='cantidad',
-            color_continuous_scale='Rainbow'
+            color_continuous_scale=[COLOR_PRIMARIO, COLOR_ACENTO]
         )
         st.plotly_chart(fig_mes, use_container_width=True)
     
@@ -352,5 +362,4 @@ if df is not None:
         """)
     
 else:
-
     st.error("No se pudieron cargar los datos de delitos. Verifica que el archivo esté en la ubicación correcta.")
